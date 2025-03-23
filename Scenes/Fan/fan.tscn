@@ -1,0 +1,25 @@
+[gd_scene load_steps=6 format=3 uid="uid://b3cw4313emlpx"]
+
+[ext_resource type="Script" path="res://Scenes/Fan/fan.gd" id="1_d16po"]
+[ext_resource type="Texture2D" uid="uid://c3imw144hkiwa" path="res://graphics/objects/ventilation_hole.png" id="1_hdcrb"]
+[ext_resource type="Texture2D" uid="uid://drid8bijma2t" path="res://graphics/objects/fan.png" id="2_55nhh"]
+
+[sub_resource type="PhysicsMaterial" id="PhysicsMaterial_oux74"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_uqt0g"]
+radius = 88.0227
+
+[node name="Fan" type="StaticBody2D"]
+position = Vector2(500, 500)
+physics_material_override = SubResource("PhysicsMaterial_oux74")
+script = ExtResource("1_d16po")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource("CircleShape2D_uqt0g")
+
+[node name="VentilationHole" type="Sprite2D" parent="."]
+texture = ExtResource("1_hdcrb")
+
+[node name="Fan" type="Sprite2D" parent="."]
+texture = ExtResource("2_55nhh")
+offset = Vector2(1.505, -8.745)

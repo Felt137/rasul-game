@@ -1,0 +1,114 @@
+[gd_scene load_steps=17 format=3 uid="uid://bhbho504fsiyo"]
+
+[ext_resource type="Script" path="res://Meta/Meta.gd" id="1_36a1m"]
+[ext_resource type="Script" path="res://Meta/UI.gd" id="1_dhns2"]
+[ext_resource type="Theme" uid="uid://7p2wq74xdd5a" path="res://Themes/main_theme.tres" id="3_tjy5k"]
+[ext_resource type="AudioStream" uid="uid://cttuivkknnqot" path="res://Audio/Music/Hell_doom_iconic.mp3" id="3_uw7cm"]
+[ext_resource type="AudioStream" uid="uid://crqiyhghvkird" path="res://Audio/Music/Normal - BLOODY STREAM - Coda (1).mp3" id="3_ys81g"]
+[ext_resource type="AudioStream" uid="uid://daceskmq15gms" path="res://Audio/Music/Hell_overkill.mp3" id="4_1m50t"]
+[ext_resource type="AudioStream" uid="uid://btkwb5qicmg8e" path="res://Audio/Music/Normal - jojo stand smth.mp3" id="4_52bip"]
+[ext_resource type="AudioStream" uid="uid://bksvn70peqhxm" path="res://Audio/Music/Normal - giorno's theme.mp3" id="5_4y83w"]
+[ext_resource type="AudioStream" uid="uid://bsvk6yxcftn6d" path="res://Audio/Music/Hell - Rip and tear.mp3" id="8_mslxm"]
+[ext_resource type="AudioStream" uid="uid://blowu503crm3w" path="res://Audio/Effects/Entity Death/4.wav" id="10_qpl7m"]
+[ext_resource type="AudioStream" uid="uid://mq7eb6w4knp7" path="res://Audio/Effects/Entity Death/clap.wav" id="10_xh77x"]
+[ext_resource type="PackedScene" uid="uid://d3t0catx4s13c" path="res://Meta/Menu/menu.tscn" id="11_4ymdu"]
+[ext_resource type="Shader" path="res://Shaders/blur.gdshader" id="13_psaqy"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_7tyhc"]
+shader = ExtResource("13_psaqy")
+shader_parameter/blur_amount = 0.0
+
+[sub_resource type="AudioStreamRandomizer" id="AudioStreamRandomizer_72txd"]
+streams_count = 3
+random_pitch = 1.0
+random_volume_offset_db = 0.0
+stream_0/stream = ExtResource("3_ys81g")
+stream_0/weight = 1.0
+stream_1/stream = ExtResource("4_52bip")
+stream_1/weight = 1.0
+stream_2/stream = ExtResource("5_4y83w")
+stream_2/weight = 1.0
+
+[sub_resource type="AudioStreamRandomizer" id="AudioStreamRandomizer_okefr"]
+streams_count = 3
+random_pitch = 1.0
+random_volume_offset_db = 0.0
+stream_0/stream = ExtResource("3_uw7cm")
+stream_0/weight = 1.0
+stream_1/stream = ExtResource("4_1m50t")
+stream_1/weight = 0.3
+stream_2/stream = ExtResource("8_mslxm")
+stream_2/weight = 1.0
+
+[node name="Meta" type="Node"]
+script = ExtResource("1_36a1m")
+
+[node name="UI" type="CanvasLayer" parent="."]
+script = ExtResource("1_dhns2")
+
+[node name="Blur" type="ColorRect" parent="UI"]
+material = SubResource("ShaderMaterial_7tyhc")
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="HS" type="Label" parent="UI"]
+offset_right = 40.0
+offset_bottom = 26.0
+
+[node name="Score" type="Label" parent="UI"]
+offset_right = 377.0
+offset_bottom = 140.0
+theme_override_font_sizes/font_size = 50
+text = "0"
+
+[node name="ColorRect" type="ColorRect" parent="UI"]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.780392, 0, 0.0117647, 0)
+
+[node name="Smartest" type="Label" parent="UI"]
+visible = false
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -149.5
+offset_right = 149.5
+offset_bottom = 53.0
+grow_horizontal = 2
+size_flags_vertical = 0
+theme = ExtResource("3_tjy5k")
+theme_override_font_sizes/font_size = 100
+text = "Чё, самый умный?"
+horizontal_alignment = 1
+
+[node name="Music" type="Node" parent="."]
+
+[node name="Normal" type="AudioStreamPlayer" parent="Music"]
+stream = SubResource("AudioStreamRandomizer_72txd")
+volume_db = -6.933
+bus = &"Music"
+
+[node name="Hell" type="AudioStreamPlayer" parent="Music"]
+stream = SubResource("AudioStreamRandomizer_okefr")
+volume_db = -8.432
+bus = &"Music"
+
+[node name="EntityDeath" type="AudioStreamPlayer" parent="Music"]
+stream = ExtResource("10_xh77x")
+volume_db = 9.462
+pitch_scale = 0.73
+max_polyphony = 10
+
+[node name="BobikCollected" type="AudioStreamPlayer" parent="Music"]
+stream = ExtResource("10_qpl7m")
+volume_db = 14.054
+
+[node name="Menu" parent="." instance=ExtResource("11_4ymdu")]
+
+[connection signal="resume" from="Menu" to="." method="_on_menu_resume"]

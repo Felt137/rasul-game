@@ -1,0 +1,19 @@
+[remap]
+
+importer="mp3"
+type="AudioStreamMP3"
+uid="uid://cak8iie8osbh7"
+path="res://.godot/imported/_Death根性出して! - Yoshihisa Hirano.mp3-69bcb86e34edc469eb2a11e7e34e2a9f.mp3str"
+
+[deps]
+
+source_file="res://Audio/Music/_Death根性出して! - Yoshihisa Hirano.mp3"
+dest_files=["res://.godot/imported/_Death根性出して! - Yoshihisa Hirano.mp3-69bcb86e34edc469eb2a11e7e34e2a9f.mp3str"]
+
+[params]
+
+loop=true
+loop_offset=0.0
+bpm=0.0
+beat_count=0
+bar_beats=4

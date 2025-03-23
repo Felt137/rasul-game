@@ -1,0 +1,43 @@
+[gd_scene load_steps=8 format=3 uid="uid://duj8rmm0y6op5"]
+
+[ext_resource type="PackedScene" uid="uid://dees1a8yvduhk" path="res://Scenes/TileMap/tile_map.tscn" id="1_3sv04"]
+[ext_resource type="PackedScene" uid="uid://dmklgqfckkjbj" path="res://Player/player.tscn" id="2_lgm6l"]
+[ext_resource type="Shader" path="res://Shaders/Distortion.gdshader" id="3_a8deu"]
+[ext_resource type="Texture2D" uid="uid://cqusn2m01y60a" path="res://icon.svg" id="4_gy1tj"]
+
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_bcaox"]
+frequency = 0.0246
+fractal_lacunarity = 2.57
+fractal_gain = 0.18
+
+[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_kjo7p"]
+seamless = true
+noise = SubResource("FastNoiseLite_bcaox")
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_1psc7"]
+shader = ExtResource("3_a8deu")
+shader_parameter/dist_noise = SubResource("NoiseTexture2D_kjo7p")
+
+[node name="Root" type="Node2D"]
+
+[node name="TileMap" parent="." instance=ExtResource("1_3sv04")]
+scale = Vector2(0.25, 0.25)
+layer_0/name = "1"
+layer_0/modulate = Color(4, 4, 4, 1)
+layer_0/tile_data = PackedInt32Array(65539, 65536, 1, 131075, 65536, 1, 196611, 65536, 1, 262147, 65536, 1, 327683, 65536, 1, 65540, 65536, 1, 131076, 65536, 1, 196612, 65536, 1, 262148, 65536, 1, 327684, 65536, 1, 65541, 65536, 1, 131077, 65536, 1, 196613, 65536, 1, 262149, 65536, 1, 327685, 65536, 1, 65542, 65536, 1, 131078, 65536, 1, 196614, 65536, 1, 262150, 65536, 1, 327686, 65536, 1, 65543, 65536, 1, 131079, 65536, 1, 196615, 65536, 1, 262151, 65536, 1, 327687, 65536, 1, 65544, 65536, 1, 131080, 65536, 1, 196616, 65536, 1, 262152, 65536, 1, 327688, 65536, 1, 65545, 65536, 1, 131081, 65536, 1, 196617, 65536, 1, 262153, 65536, 1, 327689, 65536, 1, 65538, 0, 1, 131074, 0, 1, 196610, 0, 1, 262146, 0, 1, 327682, 0, 1, 393219, 65536, 2, 393220, 65536, 2, 393221, 65536, 2, 393222, 65536, 2, 393223, 65536, 2, 393224, 65536, 2, 393225, 65536, 2, 327690, 131072, 1, 262154, 131072, 1, 196618, 131072, 1, 131082, 131072, 1, 65546, 131072, 1, 3, 65536, 0, 4, 65536, 0, 5, 65536, 0, 6, 65536, 0, 7, 65536, 0, 8, 65536, 0, 9, 65536, 0, 10, 131072, 0, 393226, 131072, 2, 393218, 0, 2, 2, 0, 0)
+layer_1/name = "2"
+layer_1/enabled = true
+layer_1/modulate = Color(1, 1, 1, 1)
+layer_1/y_sort_enabled = false
+layer_1/y_sort_origin = 0
+layer_1/z_index = 10
+layer_1/tile_data = PackedInt32Array(3, 65537, 0, 4, 65537, 0, 5, 65537, 0, 6, 65537, 0, 7, 65537, 0, 8, 65537, 0, 9, 65537, 0, 393219, 65537, 0, 393220, 65537, 0, 393221, 65537, 0, 393222, 65537, 0, 393223, 65537, 0, 393224, 65537, 0, 393225, 65537, 0, 65538, 1, 2, 131074, 1, 2, 196610, 1, 2, 262146, 1, 2, 327682, 1, 2, 65546, 1, 2, 131082, 1, 2, 196618, 1, 2, 262154, 1, 2, 327690, 1, 2, 393226, 131073, 2, 10, 131073, 1, 2, 65537, 1, 393218, 65537, 2)
+
+[node name="Icon" type="Sprite2D" parent="."]
+material = SubResource("ShaderMaterial_1psc7")
+position = Vector2(633.5, 339.5)
+scale = Vector2(6.24219, 4.64844)
+texture = ExtResource("4_gy1tj")
+
+[node name="Player" parent="." instance=ExtResource("2_lgm6l")]
+position = Vector2(592, 353)

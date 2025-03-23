@@ -1,0 +1,89 @@
+[gd_scene load_steps=10 format=3 uid="uid://qul2bmbejhkk"]
+
+[ext_resource type="Texture2D" uid="uid://bq5ayq18l7pbq" path="res://graphics/decals/dirt_patch.png" id="1_05gpv"]
+[ext_resource type="Script" path="res://level.gd" id="1_53qol"]
+[ext_resource type="PackedScene" uid="uid://dmklgqfckkjbj" path="res://Player/player.tscn" id="2_y3y6p"]
+[ext_resource type="AudioStream" uid="uid://blye5va0v3jng" path="res://Audio/Music/Beginning.wav" id="4_unn6u"]
+[ext_resource type="Script" path="res://Beg.gd" id="5_htyc1"]
+[ext_resource type="AudioStream" uid="uid://do5p8bsi6ihsi" path="res://Audio/Music/Middle.wav" id="5_hue3d"]
+[ext_resource type="AudioStream" uid="uid://b3fxk5sggto1t" path="res://Audio/Music/Hell.wav" id="6_34toj"]
+[ext_resource type="Script" path="res://Mid.gd" id="7_2icv3"]
+[ext_resource type="Script" path="res://Hell.gd" id="9_4ipuu"]
+
+[node name="Level" type="Node2D"]
+script = ExtResource("1_53qol")
+
+[node name="Floor" type="Node2D" parent="."]
+
+[node name="DirtPatch" type="Sprite2D" parent="Floor"]
+position = Vector2(791, 507)
+texture = ExtResource("1_05gpv")
+
+[node name="DirtPatch2" type="Sprite2D" parent="Floor"]
+position = Vector2(692, 1289)
+texture = ExtResource("1_05gpv")
+
+[node name="DirtPatch3" type="Sprite2D" parent="Floor"]
+position = Vector2(1584, 1219)
+texture = ExtResource("1_05gpv")
+
+[node name="DirtPatch4" type="Sprite2D" parent="Floor"]
+position = Vector2(1552, 625)
+texture = ExtResource("1_05gpv")
+
+[node name="DirtPatch5" type="Sprite2D" parent="Floor"]
+position = Vector2(162, 939)
+texture = ExtResource("1_05gpv")
+
+[node name="DirtPatch6" type="Sprite2D" parent="Floor"]
+position = Vector2(82, 104)
+texture = ExtResource("1_05gpv")
+
+[node name="DirtPatch7" type="Sprite2D" parent="Floor"]
+position = Vector2(127, 1730)
+texture = ExtResource("1_05gpv")
+
+[node name="DirtPatch8" type="Sprite2D" parent="Floor"]
+position = Vector2(922, 1833)
+texture = ExtResource("1_05gpv")
+
+[node name="DirtPatch9" type="Sprite2D" parent="Floor"]
+position = Vector2(1677, 1709)
+texture = ExtResource("1_05gpv")
+
+[node name="DirtPatch10" type="Sprite2D" parent="Floor"]
+position = Vector2(854, -148)
+texture = ExtResource("1_05gpv")
+
+[node name="DirtPatch11" type="Sprite2D" parent="Floor"]
+position = Vector2(1713, 119)
+texture = ExtResource("1_05gpv")
+
+[node name="Player" parent="." instance=ExtResource("2_y3y6p")]
+position = Vector2(969, 665)
+
+[node name="Misc" type="Node" parent="."]
+
+[node name="Beg" type="AudioStreamPlayer" parent="Misc"]
+stream = ExtResource("4_unn6u")
+script = ExtResource("5_htyc1")
+
+[node name="Timer" type="Timer" parent="Misc/Beg"]
+wait_time = 1.951
+
+[node name="Mid" type="AudioStreamPlayer" parent="Misc"]
+stream = ExtResource("5_hue3d")
+script = ExtResource("7_2icv3")
+
+[node name="Timer" type="Timer" parent="Misc/Mid"]
+wait_time = 1.951
+
+[node name="Hell" type="AudioStreamPlayer" parent="Misc"]
+stream = ExtResource("6_34toj")
+script = ExtResource("9_4ipuu")
+
+[node name="Timer" type="Timer" parent="Misc/Hell"]
+wait_time = 1.951
+
+[connection signal="timeout" from="Misc/Beg/Timer" to="Misc/Beg" method="_on_timer_timeout"]
+[connection signal="finished" from="Misc/Mid" to="Misc/Mid" method="_on_finished"]

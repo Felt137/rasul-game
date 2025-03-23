@@ -1,0 +1,64 @@
+[gd_resource type="Theme" load_steps=8 format=3 uid="uid://7p2wq74xdd5a"]
+
+[ext_resource type="FontFile" uid="uid://bfsstgexqgjli" path="res://Fonts/CasaleNeue.ttf" id="1_jpf4s"]
+[ext_resource type="Texture2D" uid="uid://r51g35gn6ftb" path="res://Sprites/cao.png" id="1_pm8ph"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_y4qm4"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_lky87"]
+bg_color = Color(0.537255, 0.00392157, 0.831373, 1)
+border_width_top = 4
+border_color = Color(0.388235, 0.00392157, 0.576471, 0)
+corner_radius_top_left = 10
+corner_radius_top_right = 10
+corner_radius_bottom_right = 10
+corner_radius_bottom_left = 10
+shadow_color = Color(0.152941, 0, 0.207843, 0.6)
+shadow_size = 1
+shadow_offset = Vector2(0, 4)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_agehy"]
+bg_color = Color(0.537255, 0.00392157, 0.831373, 1)
+border_width_bottom = 4
+border_color = Color(0.388235, 0.00392157, 0.576471, 1)
+corner_radius_top_left = 10
+corner_radius_top_right = 10
+corner_radius_bottom_right = 10
+corner_radius_bottom_left = 10
+shadow_color = Color(0.152941, 0, 0.207843, 0.6)
+shadow_size = 2
+shadow_offset = Vector2(0, 3)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_e6wrr"]
+bg_color = Color(0.701961, 0.223529, 0.756863, 1)
+border_width_top = 4
+border_color = Color(0.8, 0.8, 0.8, 0)
+corner_radius_top_left = 10
+corner_radius_top_right = 10
+corner_radius_bottom_right = 10
+corner_radius_bottom_left = 10
+shadow_color = Color(0.560784, 0, 0.498039, 1)
+shadow_size = 5
+shadow_offset = Vector2(0, 3)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_p0a62"]
+bg_color = Color(0.768627, 0.529412, 1, 1)
+corner_radius_top_left = 999
+corner_radius_top_right = 999
+corner_radius_bottom_right = 999
+corner_radius_bottom_left = 999
+expand_margin_top = 7.0
+expand_margin_bottom = 7.0
+
+[resource]
+default_font = ExtResource("1_jpf4s")
+default_font_size = 70
+Button/font_sizes/font_size = 60
+Button/styles/focus = SubResource("StyleBoxEmpty_y4qm4")
+Button/styles/hover = SubResource("StyleBoxFlat_lky87")
+Button/styles/normal = SubResource("StyleBoxFlat_agehy")
+Button/styles/pressed = SubResource("StyleBoxFlat_e6wrr")
+HSlider/icons/grabber = ExtResource("1_pm8ph")
+HSlider/icons/grabber_disabled = ExtResource("1_pm8ph")
+HSlider/icons/grabber_highlight = ExtResource("1_pm8ph")
+HSlider/styles/slider = SubResource("StyleBoxFlat_p0a62")

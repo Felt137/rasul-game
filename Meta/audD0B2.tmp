@@ -1,0 +1,50 @@
+[gd_scene load_steps=3 format=3 uid="uid://b7om3wgba7at6"]
+
+[ext_resource type="LabelSettings" uid="uid://5rhxjhcdd3wm" path="res://Styles/Label Settings/Header.tres" id="1_2qdft"]
+
+[sub_resource type="GDScript" id="GDScript_ydwtk"]
+script/source = "extends CanvasLayer
+
+const LB = 20
+const SPEED = 100
+
+func _on_volume_slider_value_changed(value):
+	#var volume = AudioServer.get_bus_volume_db(1)
+	#volume = move_toward(volume, -LB + LB * %VolumeSlider.value, SPEED)
+	AudioServer.set_bus_volume_db(1, volume)
+"
+
+[node name="Audio" type="CanvasLayer" groups=["layers"]]
+script = SubResource("GDScript_ydwtk")
+
+[node name="VBoxContainer" type="VBoxContainer" parent="."]
+anchors_preset = 10
+anchor_right = 1.0
+offset_bottom = 148.0
+grow_horizontal = 2
+
+[node name="Label" type="Label" parent="VBoxContainer"]
+layout_mode = 2
+text = "Аудио"
+label_settings = ExtResource("1_2qdft")
+horizontal_alignment = 1
+
+[node name="MarginContainer" type="MarginContainer" parent="VBoxContainer"]
+layout_mode = 2
+theme_override_constants/margin_left = 20
+theme_override_constants/margin_right = 20
+
+[node name="VBoxContainer" type="VBoxContainer" parent="VBoxContainer/MarginContainer"]
+layout_mode = 2
+
+[node name="Volume" type="Label" parent="VBoxContainer/MarginContainer/VBoxContainer"]
+layout_mode = 2
+
+[node name="VolumeSlider" type="HSlider" parent="VBoxContainer/MarginContainer/VBoxContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+max_value = 1.0
+step = 0.001
+
+[connection signal="visibility_changed" from="." to="." method="_on_visibility_changed"]
+[connection signal="value_changed" from="VBoxContainer/MarginContainer/VBoxContainer/VolumeSlider" to="." method="_on_volume_slider_value_changed"]

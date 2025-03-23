@@ -1,0 +1,19 @@
+[remap]
+
+importer="mp3"
+type="AudioStreamMP3"
+uid="uid://bksvn70peqhxm"
+path="res://.godot/imported/Normal - giorno's theme.mp3-7661921c7a74e7033cb4ace8af4314c8.mp3str"
+
+[deps]
+
+source_file="res://Audio/Music/Normal - giorno's theme.mp3"
+dest_files=["res://.godot/imported/Normal - giorno's theme.mp3-7661921c7a74e7033cb4ace8af4314c8.mp3str"]
+
+[params]
+
+loop=false
+loop_offset=0
+bpm=0
+beat_count=0
+bar_beats=4

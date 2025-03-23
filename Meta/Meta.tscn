@@ -1,0 +1,244 @@
+[gd_scene load_steps=23 format=3 uid="uid://bhbho504fsiyo"]
+
+[ext_resource type="Theme" uid="uid://7p2wq74xdd5a" path="res://Themes/main_theme.tres" id="3_tjy5k"]
+[ext_resource type="AudioStream" uid="uid://cttuivkknnqot" path="res://Audio/Music/Hell_doom_iconic.mp3" id="3_uw7cm"]
+[ext_resource type="AudioStream" uid="uid://crqiyhghvkird" path="res://Audio/Music/Normal - BLOODY STREAM - Coda (1).mp3" id="3_ys81g"]
+[ext_resource type="AudioStream" uid="uid://daceskmq15gms" path="res://Audio/Music/Hell_overkill.mp3" id="4_1m50t"]
+[ext_resource type="AudioStream" uid="uid://btkwb5qicmg8e" path="res://Audio/Music/Normal - jojo stand smth.mp3" id="4_52bip"]
+[ext_resource type="AudioStream" uid="uid://bksvn70peqhxm" path="res://Audio/Music/Normal - giorno's theme.mp3" id="5_4y83w"]
+[ext_resource type="AudioStream" uid="uid://bsvk6yxcftn6d" path="res://Audio/Music/Hell - Rip and tear.mp3" id="8_mslxm"]
+[ext_resource type="AudioStream" uid="uid://blowu503crm3w" path="res://Audio/Effects/Entity Death/4.wav" id="10_qpl7m"]
+[ext_resource type="AudioStream" uid="uid://mq7eb6w4knp7" path="res://Audio/Effects/Entity Death/clap.wav" id="10_xh77x"]
+[ext_resource type="PackedScene" uid="uid://dfmuxge3hkgw8" path="res://Meta/settings.tscn" id="13_2ngst"]
+[ext_resource type="PackedScene" uid="uid://c0nxybs50q5ug" path="res://Meta/death_screen.tscn" id="13_2w2mh"]
+[ext_resource type="Shader" path="res://Shaders/blur.gdshader" id="13_psaqy"]
+[ext_resource type="PackedScene" uid="uid://d3t0catx4s13c" path="res://Meta/menu.tscn" id="13_vmtcj"]
+[ext_resource type="PackedScene" uid="uid://b5xd2ifn1e5mr" path="res://Meta/controls.tscn" id="14_y3wf3"]
+[ext_resource type="PackedScene" uid="uid://b7om3wgba7at6" path="res://Meta/audio.tscn" id="15_75f1t"]
+[ext_resource type="PackedScene" uid="uid://mw7ivs4v7nmb" path="res://Meta/text.tscn" id="16_8gbn7"]
+
+[sub_resource type="GDScript" id="GDScript_yeaxr"]
+script/source = "extends Node
+
+var menu_popup_cnt = 0
+
+func _ready():
+	#process_priority = -1000
+	$Audio/Music/Normal.play()
+	Info.game_over.connect(game_over)
+	Info.new_bobik.connect(new_bobik)
+	Info.new_kill.connect(new_kill)
+	LayersStack.clear()
+	
+func new_kill():
+	$Audio/Effects/EntityDeath.play()
+	
+func new_bobik():
+	$Audio/Effects/BobikCollected.play()
+
+func _process(delta):
+	#music
+#	if !get_node(\"Music/\" + str(Info.mode)).is_playing() && Info.music_on:
+#		get_node(\"Music/\" + str(Info.mode)).play()
+
+	#fullscreen
+	if Input.is_action_just_pressed(\"fullscreen\"):
+		if DisplayServer.window_get_mode() == DisplayServer.WINDOW_MODE_FULLSCREEN:
+			DisplayServer.window_set_mode(DisplayServer.WINDOW_MODE_WINDOWED)
+		else:
+			DisplayServer.window_set_mode(DisplayServer.WINDOW_MODE_FULLSCREEN)
+	
+	#menu and abuse punishment
+	if Input.is_action_just_pressed(\"escape\") && LayersStack.stack.size() < 2:
+		if !get_tree().paused:
+			menu_popup_cnt += 1
+			if menu_popup_cnt == Info.MENU_POPUPS_LIMIT:
+				$UI/Smartest.visible = true
+			elif menu_popup_cnt < Info.MENU_POPUPS_LIMIT:
+				pause()
+		elif Info.game_state == 0:
+			unpause()
+	
+	#lets go babuu
+	if Input.is_action_just_pressed(\"HELL\") && Info.mode == 0:
+		Info.start_hell()
+		$Audio/Music/Normal.stop()
+		$Audio/Music/Hell.play()		
+		$Audio/Effects/EntityDeath.pitch_scale = 0.5
+		
+func pause():
+	get_tree().paused = true
+	$Layers/Menu.appear()
+
+func unpause():
+	get_tree().paused = false
+	$Layers/Menu.disappear()
+
+func _on_menu_resume():
+	unpause()
+
+func stop_music():
+	for music in $Audio/Music.get_children():
+		music.stop()
+
+func game_over():
+	if Info.GOD_MODE:
+		return
+	stop_music()
+	$UI/Score.visible = false
+	$UI/Smartest.visible = false
+	get_tree().paused = true
+	$Layers/DeathScreen.appear()
+"
+
+[sub_resource type="AudioStreamRandomizer" id="AudioStreamRandomizer_72txd"]
+streams_count = 3
+random_pitch = 1.0
+random_volume_offset_db = 0.0
+stream_0/stream = ExtResource("3_ys81g")
+stream_0/weight = 1.0
+stream_1/stream = ExtResource("4_52bip")
+stream_1/weight = 1.0
+stream_2/stream = ExtResource("5_4y83w")
+stream_2/weight = 1.0
+
+[sub_resource type="AudioStreamRandomizer" id="AudioStreamRandomizer_okefr"]
+streams_count = 3
+playback_mode = 1
+random_pitch = 1.0
+random_volume_offset_db = 0.0
+stream_0/stream = ExtResource("3_uw7cm")
+stream_0/weight = 1.0
+stream_1/stream = ExtResource("4_1m50t")
+stream_1/weight = 0.3
+stream_2/stream = ExtResource("8_mslxm")
+stream_2/weight = 1.0
+
+[sub_resource type="GDScript" id="GDScript_h1lma"]
+script/source = "extends CanvasLayer
+
+func _ready():
+	$Score.text = tr(\"Счёт\") + \": \" + str(Info.get_score())
+	Info.hell_started.connect(hell_started)
+	Info.new_bobik.connect(update_score)
+	Info.new_kill.connect(update_score)
+	Info.locale_changed.connect(update_score)
+
+func update_score():
+	$Score.text = tr(\"Счёт\") + \": \" + str(Info.get_score())
+
+func hell_started():
+	create_tween().tween_property($ColorRect, \"self_modulate\", Color(1, 1, 1, 0.3), 1.5)
+"
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_7tyhc"]
+shader = ExtResource("13_psaqy")
+shader_parameter/blur_amount = 0.0
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_suei6"]
+content_margin_top = 3.0
+bg_color = Color(0.535156, 0.00390625, 0.828125, 1)
+border_width_right = 15
+border_width_bottom = 12
+border_color = Color(0.352941, 0, 0.572549, 1)
+corner_radius_bottom_right = 45
+corner_detail = 15
+shadow_color = Color(0.101961, 0.00392157, 0.164706, 1)
+shadow_size = 15
+anti_aliasing_size = 2.722
+
+[node name="Meta" type="Node"]
+script = SubResource("GDScript_yeaxr")
+
+[node name="Audio" type="Node" parent="."]
+
+[node name="Music" type="Node" parent="Audio"]
+
+[node name="Normal" type="AudioStreamPlayer" parent="Audio/Music"]
+stream = SubResource("AudioStreamRandomizer_72txd")
+volume_db = -10.0
+bus = &"Music"
+
+[node name="Hell" type="AudioStreamPlayer" parent="Audio/Music"]
+stream = SubResource("AudioStreamRandomizer_okefr")
+volume_db = -4.441
+bus = &"Music"
+
+[node name="Effects" type="Node" parent="Audio"]
+
+[node name="EntityDeath" type="AudioStreamPlayer" parent="Audio/Effects"]
+stream = ExtResource("10_xh77x")
+volume_db = 9.462
+pitch_scale = 0.73
+max_polyphony = 10
+
+[node name="BobikCollected" type="AudioStreamPlayer" parent="Audio/Effects"]
+stream = ExtResource("10_qpl7m")
+volume_db = 14.054
+
+[node name="UI" type="CanvasLayer" parent="."]
+script = SubResource("GDScript_h1lma")
+
+[node name="Blur" type="ColorRect" parent="UI"]
+material = SubResource("ShaderMaterial_7tyhc")
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="ColorRect" type="ColorRect" parent="UI"]
+self_modulate = Color(1, 1, 1, 0)
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.780392, 0, 0.0117647, 1)
+
+[node name="Smartest" type="Label" parent="UI"]
+visible = false
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -149.5
+offset_right = 149.5
+offset_bottom = 53.0
+grow_horizontal = 2
+size_flags_vertical = 0
+theme = ExtResource("3_tjy5k")
+theme_override_font_sizes/font_size = 100
+text = "Чё, самый умный?"
+horizontal_alignment = 1
+
+[node name="Score" type="Label" parent="UI"]
+custom_minimum_size = Vector2(500, 0)
+offset_right = 262.0
+offset_bottom = 120.0
+scale = Vector2(0.4, 0.4)
+theme_override_font_sizes/font_size = 105
+theme_override_styles/normal = SubResource("StyleBoxFlat_suei6")
+text = "Счёт: 0"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Layers" type="Node" parent="."]
+
+[node name="Menu" parent="Layers" instance=ExtResource("13_vmtcj")]
+
+[node name="DeathScreen" parent="Layers" instance=ExtResource("13_2w2mh")]
+visible = false
+
+[node name="Settings" parent="Layers" instance=ExtResource("13_2ngst")]
+visible = false
+
+[node name="Controls" parent="Layers" instance=ExtResource("14_y3wf3")]
+visible = false
+
+[node name="Audio" parent="Layers" instance=ExtResource("15_75f1t")]
+visible = false
+
+[node name="Text" parent="Layers" instance=ExtResource("16_8gbn7")]
+visible = false
+
+[connection signal="resume" from="Layers/Menu" to="." method="_on_menu_resume"]

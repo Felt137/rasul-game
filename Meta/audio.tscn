@@ -1,0 +1,97 @@
+[gd_scene load_steps=5 format=3 uid="uid://b7om3wgba7at6"]
+
+[ext_resource type="LabelSettings" uid="uid://5rhxjhcdd3wm" path="res://Styles/Label Settings/Header.tres" id="1_2qdft"]
+[ext_resource type="StyleBox" uid="uid://dbxciut7dta2n" path="res://Styles/Menu_panel.tres" id="2_53e4y"]
+[ext_resource type="Theme" uid="uid://7p2wq74xdd5a" path="res://Themes/main_theme.tres" id="3_ecjom"]
+
+[sub_resource type="GDScript" id="GDScript_ydwtk"]
+script/source = "extends CanvasLayer
+
+func _ready():
+	Info.locale_changed.connect(update_text)
+	AudioServer.set_bus_volume_db(0, Data.get_var(\"master_volume\"))
+	AudioServer.set_bus_volume_db(1, Data.get_var(\"music_volume\"))
+	%MasterVolumeSlider.value = db_to_linear(Data.get_var(\"master_volume\"))
+	%MusicVolumeSlider.value = db_to_linear(Data.get_var(\"music_volume\"))
+	update_text()
+
+func _on_master_volume_slider_value_changed(value):
+	AudioServer.set_bus_volume_db(0, linear_to_db(value))
+	update_text()
+	
+func _on_music_volume_slider_value_changed(value):
+	AudioServer.set_bus_volume_db(1, linear_to_db(value))	
+	update_text()
+
+func update_text():
+	%MasterVolume.text = tr(\"Общая громкость\") + \": \" + str(int(%MasterVolumeSlider.value * 100)) + '%'
+	%MusicVolume.text = tr(\"Громкость музыки\") + \": \" + str(int(%MusicVolumeSlider.value * 100)) + '%'
+
+func save():
+	Data.set_var(\"master_volume\", AudioServer.get_bus_volume_db(0))
+	Data.set_var(\"music_volume\", AudioServer.get_bus_volume_db(1))
+"
+
+[node name="Audio" type="CanvasLayer" groups=["layers"]]
+script = SubResource("GDScript_ydwtk")
+
+[node name="VBoxContainer" type="VBoxContainer" parent="."]
+anchors_preset = 10
+anchor_right = 1.0
+offset_bottom = 148.0
+grow_horizontal = 2
+
+[node name="Label" type="Label" parent="VBoxContainer"]
+custom_minimum_size = Vector2(0, 200)
+layout_mode = 2
+text = "Аудио"
+label_settings = ExtResource("1_2qdft")
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="MarginContainer" type="MarginContainer" parent="VBoxContainer"]
+layout_mode = 2
+theme_override_constants/margin_left = 20
+theme_override_constants/margin_right = 20
+
+[node name="PanelContainer" type="PanelContainer" parent="VBoxContainer/MarginContainer"]
+layout_mode = 2
+theme_override_styles/panel = ExtResource("2_53e4y")
+
+[node name="VBoxContainer" type="VBoxContainer" parent="VBoxContainer/MarginContainer/PanelContainer"]
+layout_mode = 2
+theme_override_constants/separation = 40
+
+[node name="Master" type="VBoxContainer" parent="VBoxContainer/MarginContainer/PanelContainer/VBoxContainer"]
+layout_mode = 2
+theme_override_constants/separation = 15
+
+[node name="MasterVolume" type="Label" parent="VBoxContainer/MarginContainer/PanelContainer/VBoxContainer/Master"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "Общая громкость: 100%"
+
+[node name="MasterVolumeSlider" type="HSlider" parent="VBoxContainer/MarginContainer/PanelContainer/VBoxContainer/Master"]
+unique_name_in_owner = true
+layout_mode = 2
+theme = ExtResource("3_ecjom")
+max_value = 1.0
+step = 0.001
+
+[node name="Music" type="VBoxContainer" parent="VBoxContainer/MarginContainer/PanelContainer/VBoxContainer"]
+layout_mode = 2
+theme_override_constants/separation = 15
+
+[node name="MusicVolume" type="Label" parent="VBoxContainer/MarginContainer/PanelContainer/VBoxContainer/Music"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "Громкость музыки: 100%"
+
+[node name="MusicVolumeSlider" type="HSlider" parent="VBoxContainer/MarginContainer/PanelContainer/VBoxContainer/Music"]
+unique_name_in_owner = true
+layout_mode = 2
+max_value = 1.0
+step = 0.001
+
+[connection signal="value_changed" from="VBoxContainer/MarginContainer/PanelContainer/VBoxContainer/Master/MasterVolumeSlider" to="." method="_on_master_volume_slider_value_changed"]
+[connection signal="value_changed" from="VBoxContainer/MarginContainer/PanelContainer/VBoxContainer/Music/MusicVolumeSlider" to="." method="_on_music_volume_slider_value_changed"]

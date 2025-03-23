@@ -1,0 +1,98 @@
+[gd_scene load_steps=8 format=3 uid="uid://d3t0catx4s13c"]
+
+[ext_resource type="Theme" uid="uid://7p2wq74xdd5a" path="res://Themes/main_theme.tres" id="1_40kak"]
+[ext_resource type="LabelSettings" uid="uid://5rhxjhcdd3wm" path="res://Styles/Label Settings/Header.tres" id="2_dno4r"]
+[ext_resource type="Script" path="res://Meta/Buttons/layer_changer.tres.gd" id="2_fqhoy"]
+[ext_resource type="PackedScene" uid="uid://bveqjus8heu2k" path="res://Meta/Buttons/exit.tscn" id="2_wh36x"]
+[ext_resource type="Shader" path="res://Shaders/blur.gdshader" id="4_1s740"]
+
+[sub_resource type="GDScript" id="GDScript_tkiib"]
+script/source = "extends Node
+
+signal resume
+
+func _on_resume_pressed():
+	resume.emit()
+
+func appear():
+	LayersStack.push(\"Menu\")
+	create_tween().tween_property(AudioServer.get_bus_effect(1, 0), \"cutoff_hz\", 1500, 0.1)
+	$Blur/ColorRect.material.set_shader_parameter(\"blur_amount\", 2.5)
+
+func disappear():
+	LayersStack.pop()
+	create_tween().tween_property(AudioServer.get_bus_effect(1, 0), \"cutoff_hz\", 20500, 0.1)
+	$Blur/ColorRect.material.set_shader_parameter(\"blur_amount\", 0)
+"
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_30sda"]
+shader = ExtResource("4_1s740")
+shader_parameter/blur_amount = null
+
+[node name="Menu" type="Node"]
+script = SubResource("GDScript_tkiib")
+
+[node name="Blur" type="CanvasLayer" parent="."]
+
+[node name="ColorRect" type="ColorRect" parent="Blur"]
+material = SubResource("ShaderMaterial_30sda")
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Menu" type="CanvasLayer" parent="." groups=["layers"]]
+
+[node name="VBoxContainer" type="VBoxContainer" parent="Menu"]
+anchors_preset = -1
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.65
+offset_left = -216.0
+offset_top = -275.0
+offset_right = 216.0
+offset_bottom = 193.232
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Pause" type="Label" parent="Menu/VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 6
+size_flags_stretch_ratio = 3.91
+theme_override_font_sizes/font_size = 145
+text = "Пауза"
+label_settings = ExtResource("2_dno4r")
+horizontal_alignment = 1
+
+[node name="VBoxContainer" type="VBoxContainer" parent="Menu/VBoxContainer"]
+custom_minimum_size = Vector2(520, 0)
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 3
+size_flags_stretch_ratio = 5.83
+mouse_filter = 0
+theme_override_constants/separation = 8
+
+[node name="Resume" type="Button" parent="Menu/VBoxContainer/VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+theme = ExtResource("1_40kak")
+text = "Продолжить"
+
+[node name="Settings" type="Button" parent="Menu/VBoxContainer/VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+text = "Настройки"
+script = ExtResource("2_fqhoy")
+
+[node name="MainMenu" type="Button" parent="Menu/VBoxContainer/VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+text = "Главное меню"
+
+[node name="Exit" parent="Menu/VBoxContainer/VBoxContainer" instance=ExtResource("2_wh36x")]
+layout_mode = 2
+
+[connection signal="pressed" from="Menu/VBoxContainer/VBoxContainer/Resume" to="." method="_on_resume_pressed"]

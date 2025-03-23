@@ -1,0 +1,63 @@
+[gd_scene load_steps=4 format=3 uid="uid://mw7ivs4v7nmb"]
+
+[ext_resource type="LabelSettings" uid="uid://5rhxjhcdd3wm" path="res://Styles/Label Settings/Header.tres" id="1_k8tcm"]
+[ext_resource type="StyleBox" uid="uid://dbxciut7dta2n" path="res://Styles/Menu_panel.tres" id="2_p5q1c"]
+
+[sub_resource type="GDScript" id="GDScript_ficyw"]
+script/source = "extends CanvasLayer
+
+@onready var LanguageMenu = $VBoxContainer/MarginContainer/PanelContainer/VBoxContainer/HBoxContainer/LanguageMenu
+
+func _ready():
+	LanguageMenu.text = TranslationServer.get_locale()
+	LanguageMenu.get_popup().index_pressed.connect(index_pressed)
+
+func index_pressed(index):
+	Data.set_var(\"langauge\", LanguageMenu.get_popup().get_item_text(index))
+"
+
+[node name="Text" type="CanvasLayer" groups=["layers"]]
+script = SubResource("GDScript_ficyw")
+
+[node name="VBoxContainer" type="VBoxContainer" parent="."]
+anchors_preset = 10
+anchor_right = 1.0
+offset_bottom = 70.0
+grow_horizontal = 2
+
+[node name="Text" type="Label" parent="VBoxContainer"]
+custom_minimum_size = Vector2(0, 200)
+layout_mode = 2
+text = "Текст"
+label_settings = ExtResource("1_k8tcm")
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="MarginContainer" type="MarginContainer" parent="VBoxContainer"]
+layout_mode = 2
+theme_override_constants/margin_left = 20
+theme_override_constants/margin_right = 20
+
+[node name="PanelContainer" type="PanelContainer" parent="VBoxContainer/MarginContainer"]
+layout_mode = 2
+theme_override_styles/panel = ExtResource("2_p5q1c")
+
+[node name="VBoxContainer" type="VBoxContainer" parent="VBoxContainer/MarginContainer/PanelContainer"]
+layout_mode = 2
+
+[node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer/MarginContainer/PanelContainer/VBoxContainer"]
+layout_mode = 2
+
+[node name="Language" type="Label" parent="VBoxContainer/MarginContainer/PanelContainer/VBoxContainer/HBoxContainer"]
+layout_mode = 2
+text = "Язык"
+
+[node name="LanguageMenu" type="MenuButton" parent="VBoxContainer/MarginContainer/PanelContainer/VBoxContainer/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 10
+text = "Русский"
+item_count = 2
+popup/item_0/text = "Русский"
+popup/item_0/id = 0
+popup/item_1/text = "English"
+popup/item_1/id = 1

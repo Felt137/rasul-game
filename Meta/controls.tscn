@@ -1,0 +1,61 @@
+[gd_scene load_steps=4 format=3 uid="uid://b5xd2ifn1e5mr"]
+
+[ext_resource type="LabelSettings" uid="uid://5rhxjhcdd3wm" path="res://Styles/Label Settings/Header.tres" id="1_v6lbi"]
+[ext_resource type="StyleBox" uid="uid://dbxciut7dta2n" path="res://Styles/Menu_panel.tres" id="2_8qe5l"]
+
+[sub_resource type="GDScript" id="GDScript_e73v7"]
+script/source = "extends CanvasLayer
+
+func _ready():
+	##$VBoxContainer/HellMode.text = TranslationServer.translate(\"\"\"Нажмите \"Пробел\", чтобы пропустить\")
+	pass
+func _process(delta):
+	pass
+"
+
+[node name="Controls" type="CanvasLayer" groups=["layers"]]
+script = SubResource("GDScript_e73v7")
+
+[node name="VBoxContainer" type="VBoxContainer" parent="."]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Controls" type="Label" parent="VBoxContainer"]
+custom_minimum_size = Vector2(0, 200)
+layout_mode = 2
+text = "Управление"
+label_settings = ExtResource("1_v6lbi")
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="MarginContainer" type="MarginContainer" parent="VBoxContainer"]
+layout_mode = 2
+theme_override_constants/margin_left = 20
+theme_override_constants/margin_right = 20
+
+[node name="PanelContainer" type="PanelContainer" parent="VBoxContainer/MarginContainer"]
+layout_mode = 2
+theme_override_styles/panel = ExtResource("2_8qe5l")
+
+[node name="VBoxContainer" type="VBoxContainer" parent="VBoxContainer/MarginContainer/PanelContainer"]
+layout_mode = 2
+theme_override_constants/separation = 10
+
+[node name="Movement" type="Label" parent="VBoxContainer/MarginContainer/PanelContainer/VBoxContainer"]
+layout_mode = 2
+text = "Перемещение: W, A, S, D"
+
+[node name="Attack" type="Label" parent="VBoxContainer/MarginContainer/PanelContainer/VBoxContainer"]
+layout_mode = 2
+text = "Атака: ЛКМ/ПКМ"
+
+[node name="HellMode" type="Label" parent="VBoxContainer/MarginContainer/PanelContainer/VBoxContainer"]
+layout_mode = 2
+text = "Hell mode: H"
+
+[node name="Esc" type="Label" parent="VBoxContainer/MarginContainer/PanelContainer/VBoxContainer"]
+layout_mode = 2
+text = "Пауза, назад (в меню): Esc"

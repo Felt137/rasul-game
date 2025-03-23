@@ -1,0 +1,497 @@
+[gd_scene load_steps=34 format=3 uid="uid://c0nxybs50q5ug"]
+
+[ext_resource type="Texture2D" uid="uid://ldo26ojqych5" path="res://Photos/End_Screens/Bobik_death.png" id="1_qqan2"]
+[ext_resource type="Texture2D" uid="uid://bo4kkb76j84on" path="res://Photos/End_Screens/Pomidor.jpg" id="2_p3ldd"]
+[ext_resource type="Texture2D" uid="uid://c6i8y41lmq63u" path="res://Photos/End_Screens/Death1.png" id="3_kvy2a"]
+[ext_resource type="Texture2D" uid="uid://c1a4vx2hm6s3" path="res://Photos/End_Screens/Death2.png" id="4_466r5"]
+[ext_resource type="Shader" path="res://Shaders/blur.gdshader" id="5_ou3ab"]
+[ext_resource type="Shader" path="res://Shaders/rainbow.gdshader" id="6_2xvl1"]
+[ext_resource type="PackedScene" uid="uid://bveqjus8heu2k" path="res://Meta/Buttons/exit.tscn" id="7_mcaep"]
+[ext_resource type="PackedScene" uid="uid://d0awmsj0b5kh3" path="res://Meta/Buttons/settings.tscn" id="7_vab7y"]
+[ext_resource type="Texture2D" uid="uid://b3dvhrk6css5" path="res://Sprites/Slime/Updown.png" id="8_fr53o"]
+[ext_resource type="PackedScene" uid="uid://ubca1gxb7eqa" path="res://Meta/Buttons/main_menu.tscn" id="8_lrifj"]
+[ext_resource type="AudioStream" uid="uid://byvu1yqv45gh8" path="res://Audio/Music/Death.mp3" id="9_1ihf4"]
+[ext_resource type="AudioStream" uid="uid://cak8iie8osbh7" path="res://Audio/Music/_Death根性出して! - Yoshihisa Hirano.mp3" id="11_tynex"]
+[ext_resource type="AudioStream" uid="uid://cmecydxum4wi8" path="res://Audio/Music/hunter_Bobik_death.mp3" id="12_p1n5e"]
+[ext_resource type="AudioStream" uid="uid://b36gc7ircqmub" path="res://Audio/Music/aaaAAAa.mp3" id="13_up3qv"]
+
+[sub_resource type="GDScript" id="GDScript_no0f5"]
+script/source = "extends CanvasLayer
+
+var old_high_score
+
+func _ready():
+	Info.locale_changed.connect(update_text)
+	#visible = false
+	#$AnimationPlayer.play(\"appear\")
+
+func appear():
+	visible = true
+	LayersStack.push(\"DeathScreen\")
+	#mess
+	if Info.mode == 0:
+		old_high_score = Data.dict.high_score
+	else:
+		old_high_score = INF
+	update_text()
+	#Data.dict.high_score = 0
+	if Info.mode == 0 && Info.get_score() > Data.dict.high_score:
+		$DeathScreen/VBoxContainer/Control/Rainbow.material.set_shader_parameter(\"enabled\", true)
+		Data.set_var(\"high_score\", Info.get_score())
+	else:
+		$DeathScreen/VBoxContainer/Control/Rainbow.material.set_shader_parameter(\"enabled\", false)
+	
+	$DeathScreen.visible = true
+	if Info.game_state == 1:
+		$Background.texture.current_frame = randi() % 3 + 1
+	else:
+		$Background.texture.current_frame = 0
+	get_node(\"Music/\" + str(Info.game_state)).play()
+	$AnimationPlayer.play(\"appear\")
+	$DeathScreen/Slime/AnimationPlayer.play(\"new_animation\")
+
+func _process(delta):
+	if Input.is_action_just_pressed(\"space\"):
+		$AnimationPlayer.advance($AnimationPlayer.current_animation_length)	
+
+func _on_restart_pressed():	
+	Info._init()
+	get_tree().reload_current_scene()
+
+func update_text():
+	$DeathScreen/VBoxContainer/Control/Score.text = tr(\"Счёт\") + \": \" + str(Info.get_score())
+	$DeathScreen/Slime/AnimatedSprite2D/Label.text = tr(\"Рекорд\") + \":\\n\" + str(old_high_score)
+"
+
+[sub_resource type="AnimatedTexture" id="AnimatedTexture_qw0om"]
+frames = 4
+pause = true
+frame_0/texture = ExtResource("1_qqan2")
+frame_1/texture = ExtResource("2_p3ldd")
+frame_1/duration = 1.0
+frame_2/texture = ExtResource("3_kvy2a")
+frame_2/duration = 1.0
+frame_3/texture = ExtResource("4_466r5")
+frame_3/duration = 1.0
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_butl0"]
+shader = ExtResource("5_ou3ab")
+shader_parameter/blur_amount = 5.0
+
+[sub_resource type="LabelSettings" id="LabelSettings_rj1dw"]
+font_size = 35
+outline_color = Color(0, 0, 0, 0.882353)
+shadow_size = 3
+shadow_color = Color(0.392152, 0.0018642, 0.615712, 1)
+shadow_offset = Vector2(1, 2)
+
+[sub_resource type="Animation" id="Animation_8ibu8"]
+length = 0.001
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Blur:material:shader_parameter/blur_amount")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [5.0]
+}
+
+[sub_resource type="Animation" id="Animation_0gu7r"]
+resource_name = "appear"
+length = 3.5
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Background:modulate")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.9),
+"transitions": PackedFloat32Array(1, 1),
+"update": 0,
+"values": [Color(1, 1, 1, 0), Color(1, 1, 1, 1)]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = false
+tracks/1/path = NodePath("DeathScreen/GameOver:modulate")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0, 1.3),
+"transitions": PackedFloat32Array(1, 1),
+"update": 0,
+"values": [Color(1, 1, 1, 0), Color(1, 1, 1, 1)]
+}
+tracks/2/type = "value"
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/path = NodePath("Blur:material:shader_parameter/blur_amount")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/keys = {
+"times": PackedFloat32Array(1.8, 3.5),
+"transitions": PackedFloat32Array(1, 0.153893),
+"update": 0,
+"values": [0.0, 5.0]
+}
+tracks/3/type = "value"
+tracks/3/imported = false
+tracks/3/enabled = true
+tracks/3/path = NodePath("DeathScreen/VBoxContainer:modulate")
+tracks/3/interp = 1
+tracks/3/loop_wrap = true
+tracks/3/keys = {
+"times": PackedFloat32Array(1.8, 2.5),
+"transitions": PackedFloat32Array(1, 1),
+"update": 0,
+"values": [Color(1, 1, 1, 0), Color(1, 1, 1, 1)]
+}
+tracks/4/type = "value"
+tracks/4/imported = false
+tracks/4/enabled = true
+tracks/4/path = NodePath("DeathScreen/Slime:modulate")
+tracks/4/interp = 1
+tracks/4/loop_wrap = true
+tracks/4/keys = {
+"times": PackedFloat32Array(0, 1.8, 2.5),
+"transitions": PackedFloat32Array(1, 1, 1),
+"update": 0,
+"values": [Color(1, 1, 1, 0), Color(1, 1, 1, 0), Color(1, 1, 1, 1)]
+}
+tracks/5/type = "value"
+tracks/5/imported = false
+tracks/5/enabled = true
+tracks/5/path = NodePath("PressSpace:self_modulate")
+tracks/5/interp = 1
+tracks/5/loop_wrap = true
+tracks/5/keys = {
+"times": PackedFloat32Array(1.8, 2.5),
+"transitions": PackedFloat32Array(1, 1),
+"update": 0,
+"values": [Color(1, 1, 1, 1), Color(1, 1, 1, 0)]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_5av5v"]
+_data = {
+"RESET": SubResource("Animation_8ibu8"),
+"appear": SubResource("Animation_0gu7r")
+}
+
+[sub_resource type="AudioStreamRandomizer" id="AudioStreamRandomizer_qedqg"]
+streams_count = 2
+playback_mode = 1
+random_pitch = 1.0
+random_volume_offset_db = 0.0
+stream_0/stream = ExtResource("9_1ihf4")
+stream_0/weight = 1.0
+stream_1/stream = ExtResource("11_tynex")
+stream_1/weight = 1.0
+
+[sub_resource type="AudioStreamRandomizer" id="AudioStreamRandomizer_5fs2d"]
+streams_count = 2
+playback_mode = 1
+random_pitch = 1.0
+random_volume_offset_db = 0.0
+stream_0/stream = ExtResource("12_p1n5e")
+stream_0/weight = 1.0
+stream_1/stream = ExtResource("13_up3qv")
+stream_1/weight = 1.0
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ku033"]
+content_margin_top = 5.0
+content_margin_bottom = 5.0
+bg_color = Color(0.792157, 0, 0.0980392, 1)
+border_width_left = 4
+border_width_right = 4
+border_width_bottom = 5
+border_color = Color(0.603922, 0, 0.101961, 1)
+corner_radius_bottom_right = 20
+corner_radius_bottom_left = 20
+corner_detail = 16
+shadow_color = Color(0.392157, 0, 0.0980392, 0.8)
+shadow_size = 3
+shadow_offset = Vector2(0, 3)
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_jocjc"]
+shader = ExtResource("6_2xvl1")
+shader_parameter/enabled = false
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_l4450"]
+bg_color = Color(0.533333, 0.00392157, 0.827451, 1)
+border_width_left = 7
+border_width_top = 5
+border_width_right = 7
+border_width_bottom = 7
+border_color = Color(0.419608, 0.00392157, 0.658824, 1)
+border_blend = true
+corner_radius_top_left = 10
+corner_radius_top_right = 10
+corner_radius_bottom_right = 10
+corner_radius_bottom_left = 10
+corner_detail = 20
+shadow_color = Color(0.176471, 0.176471, 0.176471, 0.623529)
+shadow_size = 7
+shadow_offset = Vector2(0, 2)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_uagmi"]
+draw_center = false
+border_width_top = 5
+border_width_bottom = 7
+border_color = Color(0.8, 0.8, 0.8, 0)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_snytt"]
+atlas = ExtResource("8_fr53o")
+region = Rect2(0, 0, 60, 47)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_0g6xi"]
+atlas = ExtResource("8_fr53o")
+region = Rect2(60, 0, 60, 47)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_6tau8"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_snytt")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_0g6xi")
+}],
+"loop": true,
+"name": &"default",
+"speed": 2.0
+}]
+
+[sub_resource type="LabelSettings" id="LabelSettings_01pa5"]
+line_spacing = 0.0
+font_size = 47
+font_color = Color(0.996094, 0.996094, 0, 1)
+
+[sub_resource type="Animation" id="Animation_wjvha"]
+resource_name = "new_animation"
+loop_mode = 1
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("AnimatedSprite2D/Label:position")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.5),
+"transitions": PackedFloat32Array(1, 1),
+"update": 1,
+"values": [Vector2(-21.455, -21.015), Vector2(-21.455, -23)]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("AnimatedSprite2D:frame")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0, 0.5),
+"transitions": PackedFloat32Array(1, 1),
+"update": 1,
+"values": [0, 1]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_o3nal"]
+_data = {
+"new_animation": SubResource("Animation_wjvha")
+}
+
+[node name="DeathScreen" type="CanvasLayer"]
+script = SubResource("GDScript_no0f5")
+
+[node name="Background" type="TextureRect" parent="."]
+modulate = Color(1, 1, 1, 0)
+custom_minimum_size = Vector2(400, 200)
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+size_flags_horizontal = 4
+size_flags_vertical = 3
+size_flags_stretch_ratio = 5.24
+texture = SubResource("AnimatedTexture_qw0om")
+expand_mode = 1
+
+[node name="Blur" type="ColorRect" parent="."]
+material = SubResource("ShaderMaterial_butl0")
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="PressSpace" type="Label" parent="."]
+anchors_preset = 7
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -20.0
+offset_top = -70.0
+offset_right = 20.0
+grow_horizontal = 2
+grow_vertical = 0
+theme_override_font_sizes/font_size = 35
+text = "Нажмите Пробел, чтобы пропустить
+"
+label_settings = SubResource("LabelSettings_rj1dw")
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="."]
+libraries = {
+"": SubResource("AnimationLibrary_5av5v")
+}
+
+[node name="Music" type="Node" parent="."]
+
+[node name="1" type="AudioStreamPlayer" parent="Music"]
+stream = SubResource("AudioStreamRandomizer_qedqg")
+bus = &"Music"
+
+[node name="2" type="AudioStreamPlayer" parent="Music"]
+stream = SubResource("AudioStreamRandomizer_5fs2d")
+bus = &"Music"
+
+[node name="DeathScreen" type="CanvasLayer" parent="." groups=["layers"]]
+
+[node name="GameOver" type="Label" parent="DeathScreen"]
+anchors_preset = -1
+anchor_left = 0.45
+anchor_right = 0.55
+offset_left = -400.0
+offset_right = 400.0
+offset_bottom = 81.0
+grow_horizontal = 2
+theme_override_font_sizes/font_size = 65
+theme_override_styles/normal = SubResource("StyleBoxFlat_ku033")
+text = "Игра окончена"
+horizontal_alignment = 1
+
+[node name="VBoxContainer" type="VBoxContainer" parent="DeathScreen"]
+modulate = Color(1, 1, 1, 0)
+anchors_preset = -1
+anchor_left = 0.5
+anchor_top = 0.585
+anchor_right = 0.5
+anchor_bottom = 0.585
+offset_left = -260.0
+offset_top = -277.5
+offset_right = 260.0
+offset_bottom = 277.5
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/separation = 25
+
+[node name="Control" type="Control" parent="DeathScreen/VBoxContainer"]
+custom_minimum_size = Vector2(0, 170)
+layout_mode = 2
+
+[node name="Rainbow" type="Label" parent="DeathScreen/VBoxContainer/Control"]
+material = SubResource("ShaderMaterial_jocjc")
+custom_minimum_size = Vector2(700, 0)
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -350.0
+offset_top = -80.0
+offset_right = 350.0
+offset_bottom = 80.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_font_sizes/font_size = 145
+theme_override_styles/normal = SubResource("StyleBoxFlat_l4450")
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Score" type="Label" parent="DeathScreen/VBoxContainer/Control"]
+custom_minimum_size = Vector2(700, 0)
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -350.0
+offset_top = -80.0
+offset_right = 350.0
+offset_bottom = 80.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_font_sizes/font_size = 145
+theme_override_styles/normal = SubResource("StyleBoxFlat_uagmi")
+text = "Счёт: 0"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Buttons" type="VBoxContainer" parent="DeathScreen/VBoxContainer"]
+custom_minimum_size = Vector2(520, 330)
+layout_mode = 2
+size_flags_horizontal = 4
+theme_override_constants/separation = 8
+
+[node name="Restart" type="Button" parent="DeathScreen/VBoxContainer/Buttons"]
+layout_mode = 2
+size_flags_vertical = 3
+text = "Играть снова"
+
+[node name="Settings" parent="DeathScreen/VBoxContainer/Buttons" instance=ExtResource("7_vab7y")]
+layout_mode = 2
+
+[node name="MainMenu" parent="DeathScreen/VBoxContainer/Buttons" instance=ExtResource("8_lrifj")]
+layout_mode = 2
+
+[node name="Exit" parent="DeathScreen/VBoxContainer/Buttons" instance=ExtResource("7_mcaep")]
+layout_mode = 2
+
+[node name="Slime" type="Control" parent="DeathScreen"]
+modulate = Color(1, 1, 1, 0)
+layout_mode = 3
+anchors_preset = 6
+anchor_left = 1.0
+anchor_top = 0.5
+anchor_right = 1.0
+anchor_bottom = 0.5
+offset_left = -40.0
+offset_top = -20.0
+offset_right = 0.000610352
+offset_bottom = 20.0002
+grow_horizontal = 0
+grow_vertical = 2
+
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="DeathScreen/Slime"]
+texture_filter = 1
+position = Vector2(-96, -77.745)
+scale = Vector2(4, 4)
+sprite_frames = SubResource("SpriteFrames_6tau8")
+
+[node name="Label" type="Label" parent="DeathScreen/Slime/AnimatedSprite2D"]
+offset_left = -21.455
+offset_top = -21.015
+offset_right = 149.545
+offset_bottom = 116.985
+scale = Vector2(0.255, 0.255)
+theme_override_colors/font_color = Color(1, 1, 0, 1)
+theme_override_font_sizes/font_size = 42
+text = "Рекорд:
+100"
+label_settings = SubResource("LabelSettings_01pa5")
+horizontal_alignment = 1
+metadata/_edit_lock_ = true
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="DeathScreen/Slime"]
+libraries = {
+"": SubResource("AnimationLibrary_o3nal")
+}
+
+[connection signal="pressed" from="DeathScreen/VBoxContainer/Buttons/Restart" to="." method="_on_restart_pressed"]

@@ -1,0 +1,19 @@
+[remap]
+
+importer="mp3"
+type="AudioStreamMP3"
+uid="uid://bsvk6yxcftn6d"
+path="res://.godot/imported/Hell - Rip and tear.mp3-159646fa7ea7c9bbe3552e0bbb58a03e.mp3str"
+
+[deps]
+
+source_file="res://Audio/Music/Hell - Rip and tear.mp3"
+dest_files=["res://.godot/imported/Hell - Rip and tear.mp3-159646fa7ea7c9bbe3552e0bbb58a03e.mp3str"]
+
+[params]
+
+loop=false
+loop_offset=0
+bpm=0
+beat_count=0
+bar_beats=4

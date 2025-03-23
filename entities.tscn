@@ -1,0 +1,20 @@
+[gd_scene load_steps=4 format=3 uid="uid://cbvqogywb4rxx"]
+
+[ext_resource type="Texture2D" uid="uid://bi7ornrkd1mal" path="res://Photos/Entities/Entities.png" id="1_vp15y"]
+
+[sub_resource type="Shader" id="Shader_51g5m"]
+code = "shader_type canvas_item;
+
+void fragment() {
+	vec2 uv = UV;
+	COLOR = 1.0 - COLOR;
+}
+"
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_8q2kb"]
+shader = SubResource("Shader_51g5m")
+
+[node name="Entities" type="Sprite2D"]
+material = SubResource("ShaderMaterial_8q2kb")
+position = Vector2(847, 177)
+texture = ExtResource("1_vp15y")

@@ -1,0 +1,24 @@
+[gd_scene load_steps=2 format=3 uid="uid://cgx2nw738i0kk"]
+
+[ext_resource type="Texture2D" uid="uid://dcxpj7v5tug0x" path="res://Sprites/back_arrow_high_res.png" id="1_tksig"]
+
+[node name="BackArrow" type="CanvasLayer"]
+
+[node name="TextureButton" type="TextureButton" parent="."]
+anchors_preset = -1
+anchor_left = 0.02
+anchor_top = 0.03
+anchor_right = 0.02
+anchor_bottom = 0.03
+offset_right = 40.0
+offset_bottom = 40.0
+scale = Vector2(1.5, 1.5)
+texture_normal = ExtResource("1_tksig")
+ignore_texture_size = true
+stretch_mode = 4
+
+[node name="Control" type="Control" parent="."]
+layout_mode = 3
+anchors_preset = 0
+offset_right = 40.0
+offset_bottom = 40.0
